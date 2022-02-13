@@ -4,4 +4,4 @@ project(web)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(web main.cpp http/httpheader.h http/httpserve.h http/router/router.h Cmdoule.h)
+add_executable(web test/main.cpp http/httpheader.h http/httpserve.h http/router/router.h Cmdoule.h)

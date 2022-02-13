@@ -1,5 +1,7 @@
 /cmake-build-debug/
 project.properties
 /.idea/
+/test/controller/
+
 
 

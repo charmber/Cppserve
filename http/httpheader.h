@@ -2,6 +2,14 @@
 //const std::string Hearder="HTTP/1.1 200 ok\r\ncontent-type: application/json;charset=utf-8\r\nconnection: close\r\n\r\n";
 //const std::string buf="{\n\"user\":\"1234567890\",\n\"name\":\"梦\",\n\"title\":\"哈哈哈哈哈了\",\n\"news_type\":\"科技\"\n}";//HTTP响应
 //字符串转换char*
+
+//查找键值对
+void FindKeyValue(std::unordered_map<std::string,std::string>&Te,std::string s,int start,std::string Key);
+
+//查找Json
+void FindJson(std::string &json,std::string s,int start);
+
+
 class Header
 {
 public:
@@ -72,6 +80,7 @@ void Header::SerializationHeader(char res[]) {
             }
         }
     }
+    std::cout<<"url:"<<HttpRequestUrl<<std::endl;
     int l=HttpRequestWay.size()+HttpRequestUrl.size()+Http.size();
     //序列化头部键值对
     int conn=str.find("Connection",l);
@@ -104,7 +113,7 @@ void FindKeyValue(std::unordered_map<std::string,std::string>&Te,std::string s,i
             }
         }
     }
-    std::cout<<Key<<":"<<Te[Key]<<std::endl;
+    //std::cout<<Key<<":"<<Te[Key]<<std::endl;
 }
 
 void FindJson(std::string &json,std::string s,int start){

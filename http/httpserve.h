@@ -1,12 +1,24 @@
-#include "../Cmdoule.h"
-#include "httpheader.h"
+#include<stdio.h>
+#include<stdlib.h>
+#include<sys/socket.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<fcntl.h>
+#include<netinet/in.h>
+#include<arpa/inet.h>
+#include<assert.h>
+#include<unistd.h>
+#include<string.h>
+#include "./router/router.h"
 
 
-class chamber:public Header
+
+class chamber
 {
 public:
-    chamber();
-    chamber(int p);
+
+    Header header;
+    chamber(int p,Router* re);
     int SocketInit(const int port);
     void init();
     int run();
@@ -16,15 +28,17 @@ private:
     int sock;
     int confd;
     char *json;
+    Router* router;
     std::vector<std::string> t;
 
 };
 
 //构造函数传入端口号
-chamber::chamber(int p) {
+chamber::chamber(int p,Router* re) {
     init();
     ChPort=p;
     sock= this->SocketInit(ChPort);
+    router=re;
 }
 //socket初始化
 int chamber::SocketInit(const int port) {
@@ -62,12 +76,14 @@ int chamber::run() {
             char request[1024];
             recv(confd, request, 1024, 0);
             request[strlen(request)+1]='\0';
-            SerializationHeader(request);
+            header.SerializationHeader(request);
+            router->CallRequest(header.HttpRequestUrl);
+            //std::cout<<HttpRequestUrl<<std::endl;
             //printf("%s\n",request);
             //std::cout<<HttpRequestWay<<std::endl<<Http<<std::endl;
             std::string st= Json(JsonInit(t));
             //std::string http=init();
-            char *Hea= StrChangeChar(initHeader()+st,1024);
+            char *Hea= header.StrChangeChar(header.initHeader()+st,1024);
             int s = send(confd, Hea, strlen(Hea), 0);//发送响应
             //printf("send=%d\n",s);
             close(confd);
