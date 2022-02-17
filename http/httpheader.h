@@ -27,6 +27,7 @@ public:
     char* StrChangeChar(std::string str,int len);//字符串转char类型
     std::string SendRequestHeader(int code,std::string Type);//封装响应头部
     void SerializationHeader(char res[]);//反序列化请求头
+     int serverID;
 
 private:
     const std::string Header="HTTP/1.1 200 ok\r\n";

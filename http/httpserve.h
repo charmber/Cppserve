@@ -8,10 +8,7 @@
 #include<arpa/inet.h>
 #include<assert.h>
 #include<unistd.h>
-#include<string.h>
 #include "./router/router.h"
-
-
 
 class chamber
 {
@@ -27,7 +24,6 @@ private:
     int ChPort;
     int sock;
     int confd;
-    char *json;
     Router* router;
     std::vector<std::string> t;
 
@@ -74,19 +70,11 @@ int chamber::run() {
         }
         else{
             char request[1024];
+            header.serverID=confd;
             recv(confd, request, 1024, 0);
             request[strlen(request)+1]='\0';
             header.SerializationHeader(request);
-            router->CallRequest(header.HttpRequestUrl);
-            //std::cout<<HttpRequestUrl<<std::endl;
-            //printf("%s\n",request);
-            //std::cout<<HttpRequestWay<<std::endl<<Http<<std::endl;
-            std::string st= Json(JsonInit(t));
-            //std::string http=init();
-            char *Hea= header.StrChangeChar(header.initHeader()+st,1024);
-            int s = send(confd, Hea, strlen(Hea), 0);//发送响应
-            //printf("send=%d\n",s);
-            close(confd);
+            router->CallRequest(header);
         }
     }
 }

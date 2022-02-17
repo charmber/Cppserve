@@ -4,6 +4,7 @@
 
 const std::string quotes="\"";
 const std::string enter="\n";
+typedef std::unordered_map<std::string,std::string> ChJson;
 
 
 //json键值对初始化
@@ -27,7 +28,4 @@ std::string Json(std::unordered_map<std::string,std::string>Js){
     }
     return json;
 }
-//std::string Json(std::unordered_map<std::string,std::unordered_map<std::string,std::string>>Js){
-//
-//}
 
