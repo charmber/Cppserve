@@ -1,9 +1,9 @@
 #include "./controller/test.cpp"
 
 
-void RouterManage(Router* r){
-    r->AddUrl("index",test);
-    r->AddUrl("login",login);
-    r->AddUrl("fin",fin);
+void RouterManage(){
+    router.AddUrl("index",test);
+    router.AddUrl("login",login);
+    router.AddUrl("fin",fin);
 }
 

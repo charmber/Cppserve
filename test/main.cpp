@@ -5,11 +5,11 @@
 
 int main()
 {
-    ThreadPool pool;
+    ThreadPool pool(8);
     pool.init();
-    Router r(&pool);
-    RouterManage(&r);
-    chamber c(8889,&r);
+    router.StartTthreadPool(&pool);
+    RouterManage();
+    chamber c(8080);
     c.run();
     return 0;
 }
