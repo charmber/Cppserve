@@ -1,5 +1,8 @@
 #include "ThreadQueue.h"
 #include <future>
+#include <functional>
+
+std::mutex sock_lock;   //关闭套接字锁
 
 class ThreadPool{
 private:
@@ -17,14 +20,14 @@ private:
                     std::unique_lock<std::mutex> lock(in_pool->mutually_thread);
 
                     //如果任务为空就阻塞
-                    if(in_pool->task_queue.empty()){
+                    if (in_pool->task_queue.empty()) {
                         //等待唤醒
                         in_pool->notice_thread.wait(lock);
                     }
-                    que=in_pool->task_queue.getQueue(func);
-                    if(que){
-                        func();
-                    }
+                    que = in_pool->task_queue.getQueue(func);
+                }
+                if(que){
+                    func();
                 }
             }
         }
@@ -39,7 +42,6 @@ public:
         thread_list=std::vector<std::thread>(n_thread);
         shut_thread= false;
     }
-
     //删除默认拷贝构造函数
     ThreadPool(const ThreadPool&)=delete;
     ThreadPool(const ThreadPool&&)=delete;

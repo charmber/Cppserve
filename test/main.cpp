@@ -7,7 +7,7 @@ int main()
 {
     ThreadPool pool(8);
     pool.init();
-    router.StartTthreadPool(&pool);
+    router.StartThreadPool(&pool);
     RouterManage();
     chamber c(8080);
     c.run();

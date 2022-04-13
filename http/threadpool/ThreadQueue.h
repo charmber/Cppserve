@@ -1,5 +1,7 @@
 #include <queue>
 #include <thread>
+#include <mutex>
+#include <unistd.h>
 
 template<typename T>
 class ThreadQueue{
@@ -9,18 +11,13 @@ private:
 public:
     //判断队列是否为空
     bool empty(){
-    std::unique_lock<std::mutex> lock(queueLock);   //加锁，防止队列被改变
-    return safeQueue.empty();
-}
-    //获取队列长度
-    int size(){
-        std::unique_lock<std::mutex> lock(queueLock);
-        return safeQueue.size();
+        std::unique_lock<std::mutex> lock(queueLock);   //加锁，防止队列被改变
+        return safeQueue.empty();
     }
     //添加队列元素
     void add(T &t){
         std::unique_lock<std::mutex> lock(queueLock);
-        safeQueue.template emplace(t);
+        safeQueue.emplace(t);
     }
     //取出元素
     bool getQueue(T &t){
@@ -31,5 +28,4 @@ public:
         safeQueue.pop();
         return true;
     }
-
 };

@@ -1,3 +1,7 @@
+
+
+
+
 # C++web框架
 
 ### 简介
@@ -38,14 +42,9 @@ Cmdouble.h
 - **json.h**:处理json格式序列化和反序列化操作
 - **Cmdoble.h**:c++标准库头文件存放文件
 
-<<<<<<< Updated upstream
-=======
-
 ### 支持路由分发功能
 
 通过router对象调用AddUrl方法即可添加不同路由对应处理的业务逻辑函数
-
->>>>>>> Stashed changes
 
 ### 增加线程池功能：
 
@@ -53,12 +52,55 @@ Cmdouble.h
 多线程使用了一个线程池进行管理，实现了一个任务队列对任务进行处理
 明显提高了io请求的并发能力，
 
-<<<<<<< Updated upstream
-
-**API文档将在后续版本更新**
-=======
-
 ### 增加epoll多路复用-边缘(ET)非阻塞模式
 
+### 性能测试结果
 
-**API文档将在后续版本更新**
+![img.png](./res/img.png)
+在并发量为800的情况下也能稳定全部请求成功，并且每分钟可以接收10万以上请求
+
+#### 路由相关api
+实现类为router，
+例如添加一个http请求：
+```c++
+//添加GET请求
+    router.Get("index",test);   //第二个参数即为调用接口
+//添加POST请求
+    router.POST("login",login);
+```
+
+然后即可启动一个服务：
+```c++
+//创建一个服务对象，传入需要开启的端口号，调用run即可
+int main()
+{
+    chamber c(8080);
+    c.run();
+    return 0;
+}
+```
+如果需要开启多线程则需要调用路由对象方法以及创建线程池对象
+```c++
+int main()
+{
+    ThreadPool pool(8);     //选择需要开启的最大线程数量，默认为4个
+    pool.init();
+    router.StartThreadPool(&pool);
+    RouterManage();
+    chamber c(8080);
+    c.run();
+    return 0;
+}
+```
+
+调用接口函数响应时候则可以
+```c++
+//传入一个Header对象，封装json成字符串传入SendRequestHeader，以及选择响应状态码即可
+void test(Header hea){
+    ChJson te;
+    te["测试"]="成功";
+    te["测试2"]="哈哈哈";
+    std::string st= Json(te);
+    hea.SendRequestHeader(200,st);
+}
+```

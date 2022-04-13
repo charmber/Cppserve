@@ -2,8 +2,8 @@
 
 
 void RouterManage(){
-    router.AddUrl("index",test);
-    router.AddUrl("login",login);
-    router.AddUrl("fin",fin);
+    router.Get("index",test);
+    router.Get("login",login);
+    router.Get("fin",fin);
 }
 

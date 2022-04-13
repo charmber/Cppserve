@@ -3,11 +3,25 @@
 //const std::string buf="{\n\"user\":\"1234567890\",\n\"name\":\"梦\",\n\"title\":\"哈哈哈哈哈了\",\n\"news_type\":\"科技\"\n}";//HTTP响应
 //字符串转换char*
 
+#define MAX_EVENTS  1024                                    //监听上限数
+#define BUFLEN 4096
+
 //查找键值对
 void FindKeyValue(std::unordered_map<std::string,std::string>&Te,std::string s,int start,std::string Key);
 
 //查找Json
 void FindJson(std::string &json,std::string s,int start);
+
+struct myevent_s {
+    int fd;                                                 //要监听的文件描述符
+    int events;                                             //对应的监听事件
+    void *arg;                                              //泛型参数
+    void (*call_back)(int fd, int events, void *arg);       //回调函数
+    int status;                                             //是否在监听:1->在红黑树上(监听), 0->不在(不监听)
+    char buf[BUFLEN];
+    int len;
+    long last_active;                                       //记录每次加入红黑树 g_efd 的时间值
+};
 
 
 class Header
@@ -24,36 +38,38 @@ public:
     std::unordered_map<std::string,std::string> HttpCookie;
     std::string HttpBody;
     std::string initHeader();
-    char* StrChangeChar(std::string str,int len);//字符串转char类型
-    std::string SendRequestHeader(int code,std::string Type);//封装响应头部
+    void StrChangeChar(std::string,char []);//字符串转char类型
+    int SendRequestHeader(int code,std::string msg);//封装响应头部
     void SerializationHeader(char res[]);//反序列化请求头
-     int serverID;
+    int serverID;
+    myevent_s *ev;
+    int g_efd;
 
 private:
     const std::string Header="HTTP/1.1 200 ok\r\n";
     const std::string ContentTypeJson="content-type: application/json;charset=utf-8\r\n";
     const std::string connection="connection: close\r\n\r\n";
 };
-char * Header::StrChangeChar(std::string str, int len) {
-    char p[len];
-    str.copy(p,str.length(),0);
-    return p;
+void Header::StrChangeChar(std::string str,char msg[]) {
+    strcpy(msg,str.c_str());
 }
 
 std::string Header::initHeader() {
     return Header+ContentTypeJson+connection;
 }
 
-std::string Header::SendRequestHeader(int code,std::string Type){
-    if(Type=="json"){
-        return "HTTP/1.1 "+std::to_string(code)+" "+"ok\r\n"+ContentTypeJson+connection;
-    }
+int Header::SendRequestHeader(int code,std::string msg){
+    std::string head="HTTP/1.1 "+std::to_string(code)+" "+"ok\r\n"+ContentTypeJson+connection;
+    char res[1024];
+    StrChangeChar(head+msg,res);
+    int n=send(serverID,res, strlen(res),0);
+    close(serverID);
+    return n;
 }
 
 
 //解析请求头
 void Header::SerializationHeader(char res[]) {
-    int p=0;
     int start=0;
     std::string str(res);
     for(int i=0;i<str.size();i++){
@@ -81,7 +97,7 @@ void Header::SerializationHeader(char res[]) {
             }
         }
     }
-    std::cout<<"url:"<<HttpRequestUrl<<std::endl;
+    //std::cout<<"url:"<<HttpRequestUrl<<std::endl;
     int l=HttpRequestWay.size()+HttpRequestUrl.size()+Http.size();
     //序列化头部键值对
     int conn=str.find("Connection",l);
@@ -126,5 +142,6 @@ void FindJson(std::string &json,std::string s,int start){
     json.assign(s,l,b-l+1);
     //std::cout<<"json:"<<json<<std::endl;
 }
+
 
 
