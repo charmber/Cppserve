@@ -14,18 +14,11 @@ void login(Header hea){
     ChJson te;
     te["测试"]="成功";
     std::string st= Json(te);
-    char msg[1024];
-    hea.StrChangeChar(hea.initHeader()+st,msg);
-    send(hea.serverID, msg, strlen(msg), 0);//发送响应
-
-    close(hea.serverID);
+    hea.SendRequestHeader(200,st);
 }
 void fin(Header hea){
     ChJson te;
     te["查找"]="成功";
     std::string st= Json(te);
-    char msg[1024];
-    hea.StrChangeChar(hea.initHeader()+st,msg);
-    send(hea.serverID, msg, strlen(msg), 0);//发送响应
-    close(hea.serverID);
+    hea.SendRequestHeader(200,st);
 }

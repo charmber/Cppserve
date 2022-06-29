@@ -2,6 +2,7 @@
 project.properties
 /.idea/
 /test/a.out
+.DS_Store
 .gitignore
 
 

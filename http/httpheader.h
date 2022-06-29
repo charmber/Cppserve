@@ -63,6 +63,7 @@ int Header::SendRequestHeader(int code,std::string msg){
     char res[1024];
     StrChangeChar(head+msg,res);
     int n=send(serverID,res, strlen(res),0);
+    printf("%s %s %d success!\n",HttpRequestWay.c_str(),HttpRequestUrl.c_str(),code);
     close(serverID);
     return n;
 }

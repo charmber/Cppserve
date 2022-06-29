@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include "../router/router.h"
 
 Router router;              //路由创建
 
@@ -60,7 +61,7 @@ void EventAdd(int efd, int events, struct myevent_s *ev)
     else
         printf("event add OK [fd=%d], op=%d, events[%0X]\n", ev->fd, op, events);
 
-    return ;
+    return;
 }
 
 /* 从epoll 监听的 红黑树中删除一个 文件描述符*/
@@ -164,7 +165,7 @@ void Send_data(int fd, int events, void *arg)
     EventDel(g_efd, ev);
     router.CallRequest(header);
 
-    return ;
+    return;
 }
 
 /*创建 socket, 初始化lfd */
@@ -188,5 +189,5 @@ void Init_listen_socket(int efd, short port)
 
     listen(lfd, 20);
 
-    return ;
+    return;
 }
